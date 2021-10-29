@@ -3,6 +3,7 @@ import ParameterMonitor from './parameter_monitor.js'
 import Clips from './clips.js'
 import Colors from './colors.js'
 import React, { useState, useEffect, useContext } from 'react'
+import Monitor from './monitor.js'
 
 function Grid() {
     const context                               = useContext(ResolumeContext);
@@ -43,6 +44,11 @@ function Grid() {
                         clips={clips}
                         colorids={colorids}
                     />
+
+                    <Monitor
+                        key="monitor"
+                    />
+
                 </React.Fragment>
             );
         }} />
