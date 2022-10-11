@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { ResolumeContext } from './resolume_provider.js'
 import PropTypes from 'prop-types';
+import ParameterMonitor from './parameter_monitor.js';
 
 /**
   * Component for rendering a clip, responds to clicks
@@ -14,27 +15,26 @@ function Clip(props) {
     const select    = ()        => { context.action('trigger', `/composition/clips/by-id/${props.id}/select`);          }
     const connect   = (down)    => { context.action('trigger', `/composition/clips/by-id/${props.id}/connect`, down);   };
 
-    /**
-      * Connected has 5 possible states 
-      * "Empty", "Disconnected", "Previewing", "Connected", "Connected & previewing"
-      */
-    const connected = props.connected.index >= 3;
     const name      = props.name.value.length > 23 ? props.name.value.substring(0,22) + "..." : props.name.value;
     const src       = context.clip_url(props.id, props.last_update);
 
     return (
-        <div>              
-            <div className={`clip ${connected ? 'connected' : 'none'}`}>
-                <img className="thumbnail"
-                    src={src}
-                    onMouseDown={() => connect(true)}
-                    onMouseUp={() => connect(false)}
-                    alt={props.name.value}
-                />                
-            </div>              
-            <div className={`handle ${props.selected.value ? 'selected' : ''}`} onMouseDown={select}>
-                {name}
-            </div>
+        <div>
+            <ParameterMonitor.Single parameter={props.connected} render={connected => (
+                <div className={`clip ${connected.index >= 3 ? 'connected' : 'none'}`}>
+                    <img className="thumbnail"
+                        src={src}
+                        onMouseDown={() => connect(true)}
+                        onMouseUp={() => connect(false)}
+                        alt={props.name.value}
+                    />
+                </div>
+            )} />
+            <ParameterMonitor.Single parameter={props.selected} render={selected => (
+                <div className={`handle ${selected.value ? 'selected' : ''}`} onMouseDown={select}>
+                    {name}
+                </div>
+            )} />
         </div>
     )
 }
