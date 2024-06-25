@@ -38,6 +38,20 @@ function ResolumeProvider(props) {
             if (typeof message.type !== 'string') {
                 console.log('state update', message);
                 setComposition(message);
+            } else if (message.type === 'thumbnail_update') {
+                setComposition(composition => {
+                    for (const layer of composition.layers) {
+                        for (const clip of layer.clips) {
+                            if (clip.id === message.value.id) {
+                                clip.thumbnail = message.value;
+                                return {...composition};
+                            }
+                        }
+                    }
+
+                    // no match found, re-use existing composition
+                    return composition;
+                });
             }
         });
 
